@@ -1,4 +1,4 @@
-READ MORE ON SQL HERE AND ANSWER THE BELOW QUESTIONS USING THIS DATABASE
+mREAD MORE ON SQL HERE AND ANSWER THE BELOW QUESTIONS USING THIS DATABASE
 STORE YOUR ANSWERS IN A NOTEPAD
 1.Insert a customer in the customers table,view the record and update the record
 2.Insert an order for the Customer inserted in number 1 above,choose employee and shipper.

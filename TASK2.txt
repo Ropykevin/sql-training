@@ -1,0 +1,171 @@
+1.Create an ERD Diagram for THIS DATABASE (W3Schools WebSQL).
+2.Display a single relation with: OrderId, OrderDate, CustomerName, City, Address,  PostalCode, ShipperName, ProductName, Quantity.
+3.Display all products ever been ordered and display the shipper name.
+4.Display the count of all products shipped by each of the 3 shippers.
+5.How many customers DO NOT have the words ‘son’ in their CustomerName.
+6.Find the total sales made in the year 1997.
+7. Display each customer_name and total_amount ever spent in the business, from highest amount.
+8. Find the top supplier of the business (in terms of products ordered).
+9. Find the total sales of each product.
+10. Find the best performing month in the business in terms of sales. Hint: Use substr() on the date to slice
+11. Find the total sales per day.
+12. Find the total Sales for each Customer, the ones who have never ordered leave as 0.
+13. In the same database, create the table payments and determine the foreign key, any relevant columns and their respective data types. Insert at least 5 records.
+
+QUESTION1
+	PARENT TABLES
+1.CUSTOMERS TABLE
+	primarykey=>customerid
+2.CATEGORY TABLE
+	primaryid=>categoryid
+3.EMPLOYEES TABLE
+	primarykey=>employeeid
+4.SHIPPERS TABLE
+	primarykey=>shipperid
+5.SUPPLIERS TABLE
+	primarykey=>suplierid
+	
+	CHILDREN TABLES
+6.ORDERS TABLE
+	primarykey=>orderid
+	foreignkey=>customerid
+	foreignkey=>shipperid
+	foreignkey=>employeeid
+7.PRODUCTS TABLE
+	primarykey=>productid
+	foreignkey=>categoryid
+	foreignkey=>supplierid
+8.ORDERDETS TABLE
+	primarykey=>orderdetailid
+	foreignkey=>orderid
+	foreignkey=>productsid
+
+  	CHILD/PARENT
+1.ORDERS TABLE
+2.PRODUCTS TABLE
+
+	CHILD TABLE
+1.ORDERDETS TABLE
+
+	ADDED TABLE
+1. payments table
+2.primary key=orderid
+3.foreign key=orderdetailsid
+
+
+QUESTION 2
+SELECT ord.OrderID, ord.OrderDate,cu.Customername,cu.City,cu.Address,cu.PostalCode,
+shp.ShipperName,prd.productName,ordt.quantity
+FROM Orders AS ord
+JOIN Customers AS cu
+ON ord.CustomerID=cu.CustomerID
+JOIN Shippers AS shp
+ON ord.ShipperID=shp.ShipperID
+JOIN Orderdetails AS ordt
+ON ordt.orderID=ord.orderID
+JOIN Products AS prd
+ON prd.productID=ordt.productID;
+
+QUESTION 3
+SELECT pr.productname,shp.shippername,
+FROM Orders AS Ord
+JOIN Orderdetails AS ordt
+ON ordt.orderid=Ord.orderid
+JOIN  products AS pr
+ON pr.productid=ordt.productid
+JOIN shippers AS shp
+ON shp.shipperid=ord.shipperid
+
+QUESTION 4
+SELECT shippers.shippername, count(products.productid) as total_products_supplied
+FROM orders
+JOIN orderdetails
+ON orderdetails.orderid=orders.orderid
+JOIN products
+ON products.productid=orderdetails.productid
+JOIN Shippers
+ON Shippers.Shipperid=orders.Shipperid
+GROUP BY shippers.shippername;
+
+QUESTION 5
+SELECT customers.customername
+FROM customers
+WHERE customers.customername NOT LIKE '%son%'
+
+QUESTION 6
+SELECT  sum(orderdetails.quantity*products.price),orders.orderdate
+FROM orders
+JOIN orderdetails
+ON orderdetails.orderid=orders.orderid
+JOIN products
+ON products.productid=orderdetails.productid
+WHERE orders.orderdate like '%1997-%'
+
+QUESTION 7
+SELECT cu.customername,SUM(ordt.quantity*pr.price)
+AS totalamountspent
+FROM  customers AS cu
+JOIN orders as ord
+ON ord.customerid=cu.customerid
+JOIN orderdetails AS ordt
+ON ordt.orderid=ord.orderid
+JOIN products AS pr
+ON pr.productid=ordt.productid
+GROUP BY cu.customername
+ 
+QUESTION 8
+SELECT suppliers.suppliername,sum(ordt.quantity) AS totalsupplied
+FROM suppliers
+JOIN products
+ON products.supplierid=products.supplierid
+JOIN orderdetails AS ordt
+ON ordt.productid=products.productid
+GROUP BY suppliers.suppliername
+ODER BY totalsupplied 
+DESC
+LIMIT 1
+
+QUESTION 9
+SELECT pr.productname,sum(ordt.quantity*pr.price)
+AS productstotal
+FROM orderdetails as ordt
+JOIN products as pr
+ON products.productid=ordt.productsid
+
+QUESTION 10
+
+
+QUestion 11
+
+
+Question 12
+SELECT cu.customername,sum(ordt.quantity*pr.price) as total
+FROM customers AS cu
+join orders as ord
+on ord.customerid=cu.customerid
+join orderdetails as ordt
+on ordt.orderid=ord.orderid
+join products as pr
+on pr.productid=ordt.productid
+group by cu.customername
+order by total DESC
+
+QUESTION 13
+CREATE TABLE payments (
+payment_id PRIMARY KEY,
+payment_date DATE NOT NULL,
+amount DECIMAL(10, 2) NOT NULL,
+orderdetailid INT REFERENCES orderdetails(orderdetailid)
+);
+
+inserted values to payments table
+INSERT INTO payments (payment_date, amount, orderdetailid) VALUES
+('2023-09-15', 100.00, 1),
+('2023-09-16', 75.50, 2),
+('2023-09-17', 200.25, 3),
+('2023-09-18', 50.75, 4),
+('2023-09-19', 300.00, 5);
+
+
+
+
