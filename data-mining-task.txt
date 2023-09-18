@@ -133,7 +133,12 @@ JOIN products as pr
 ON products.productid=ordt.productsid
 
 QUESTION 10
-
+SELECT SUBSTR(OrderDate, 6, 2) AS Sales_Month, SUM(Quantity * Price) AS Sum_Sales
+FROM Orders AS ord
+JOIN OrderDetails AS ordt ON ord.OrderID = ordt.OrderID
+JOIN Products AS pr ON ordt.ProductID = pr.ProductID
+GROUP BY Sales_Month
+ORDER BY Sum_Sales DESC;
 
 QUestion 11
 SELECT orderdate, sum ( orderdetails.quantity*products.price ) AS day_sales
