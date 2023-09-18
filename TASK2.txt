@@ -136,6 +136,13 @@ QUESTION 10
 
 
 QUestion 11
+SELECT orderdate, sum ( orderdetails.quantity*products.price ) AS day_sales
+FROM orders
+JOIN orderdetails
+ON orderdetails.orderid=orders.orderid
+JOIN products
+ON products.productid=orderdetails.productid
+GROUP BY orderdate
 
 
 Question 12
